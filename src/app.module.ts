@@ -11,8 +11,7 @@ import { DataSourceConfig } from './config/data.sources';
         isGlobal: true,
       }
     ),
-    TypeOrmModule.forRoot({...DataSourceConfig}),
-    
+    TypeOrmModule.forRoot({...DataSourceConfig})
   ],
   controllers: [AppController],
   providers: [AppService],
