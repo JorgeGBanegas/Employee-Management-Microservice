@@ -3,7 +3,7 @@ import { BaseEntiy } from "./base.entity";
 import { Column, Entity, Index, ManyToOne, PrimaryColumn } from "typeorm";
 import { Schedule } from "./schedule.entity";
 
-enum DAY {
+export enum DAY {
     MONDAY = 'Lunes',
     TUESDAY = 'Martes',
     WEDNESDAY = 'Miercoles',
@@ -13,17 +13,17 @@ enum DAY {
     SUNDAY = 'Domingo',
 }
 
-@Entity({name: 'detailSchedule'})
+@Entity({ name: 'detailSchedule' })
 @Index(['id', 'schedule'], { unique: true })
 export class DetailSchedule extends BaseEntiy implements IDetailSchedule {
-    
-    @Column({ type: 'enum', enum: DAY, nullable: false})
+
+    @Column({ type: 'enum', enum: DAY, nullable: false })
     day: DAY;
-    
-    @Column({type: 'time', nullable: false})
+
+    @Column({ type: 'time', nullable: false })
     startHour: string;
 
-    @Column({type: 'time', nullable: false})
+    @Column({ type: 'time', nullable: false })
     endHour: string;
 
     @PrimaryColumn({ type: 'number', name: 'schedule_id', nullable: false })
