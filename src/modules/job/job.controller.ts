@@ -7,7 +7,7 @@ import { CreateJobDTO } from './jobDTOs/createJob.dto';
 export class JobController {
     constructor(
         private readonly jobService: JobService
-    ) {}
+    ) { }
 
     @Get()
     async findAll(): Promise<JobDTO[]> {
@@ -17,9 +17,8 @@ export class JobController {
     @Post()
     async create(@Body() job: CreateJobDTO): Promise<CreateJobDTO> {
         try {
-            console.log("🚀 ~ file: job.controller.ts:20 ~ JobController ~ create ~ job:", job)
             return await this.jobService.create(job);
-        }catch(error) {
+        } catch (error) {
             throw error;
         }
     }
@@ -27,9 +26,8 @@ export class JobController {
     @Get(':id')
     async findById(@Param('id') id: number): Promise<JobDTO> {
         try {
-            console.log("🚀 ~ file: job.controller.ts:30 ~ JobController ~ findById ~ id:", id)
             return await this.jobService.findById(id);
-        }catch(error) {
+        } catch (error) {
             throw error;
         }
     }

@@ -5,18 +5,18 @@ import { Job } from "./job.entity";
 import { Schedule } from "./schedule.entity";
 import { AttendanceRecord } from "./attendanceRecord.entity";
 
-enum GENDER {
+export enum GENDER {
     MALE = 'M',
     FEMALE = 'F',
 }
 
 
-@Entity({name: 'employee'})
-export class Employee extends BaseEntiy implements IEmployee{
-    @Column({ type: 'varchar', length: 60, nullable: false})
+@Entity({ name: 'employee' })
+export class Employee extends BaseEntiy implements IEmployee {
+    @Column({ type: 'varchar', length: 60, nullable: false })
     firstName: string;
-    
-    @Column({ type: 'varchar', length: 60, nullable: false})
+
+    @Column({ type: 'varchar', length: 60, nullable: false })
     lastName: string;
 
     @Column({ type: 'varchar', length: 15, nullable: false, unique: true })
@@ -25,7 +25,7 @@ export class Employee extends BaseEntiy implements IEmployee{
     @Column({ type: 'varchar', length: 255, nullable: false, unique: true })
     email: string;
 
-    @Column({ type: 'enum', enum: GENDER, nullable: false})
+    @Column({ type: 'enum', enum: GENDER, nullable: false })
     gender: GENDER;
 
     @Column({ type: 'date', nullable: false })
@@ -34,12 +34,12 @@ export class Employee extends BaseEntiy implements IEmployee{
     @Column({ type: 'text', nullable: false })
     photo: string;
 
-    @ManyToOne(() => Job, (job) => job.employees, {nullable: false})
+    @ManyToOne(() => Job, (job) => job.employees, { nullable: false, eager: true })
     job: Job;
 
-    @ManyToOne(() => Schedule, (schedule) => schedule.employees, {nullable: false})
+    @ManyToOne(() => Schedule, (schedule) => schedule.employees, { nullable: false, eager: true })
     schedule: Schedule;
 
-    @OneToMany(() => AttendanceRecord, (attendanceRecord) => attendanceRecord.employee, {nullable: false})
+    @OneToMany(() => AttendanceRecord, (attendanceRecord) => attendanceRecord.employee, { nullable: false })
     attendanceRecords: AttendanceRecord[];
 }

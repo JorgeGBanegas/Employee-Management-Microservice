@@ -10,7 +10,7 @@ export class JobService {
     constructor(
         @InjectRepository(Job)
         private readonly jobRepository: Repository<Job>
-    ){}
+    ) { }
 
     async findAll(): Promise<JobDTO[]> {
         const jobs = await this.jobRepository.find();
@@ -24,7 +24,7 @@ export class JobService {
             }
         });
 
-        if(jobExists) {
+        if (jobExists) {
             throw new HttpException('El cargo ya existe', HttpStatus.BAD_REQUEST);
         }
         const newJob = await this.jobRepository.save(job);
@@ -37,7 +37,7 @@ export class JobService {
                 id: id
             }
         });
-        if(!job) {
+        if (!job) {
             throw new HttpException('No se encontro el cargo', HttpStatus.NOT_FOUND);
         }
         return JobDTO.fromEntity(job);
