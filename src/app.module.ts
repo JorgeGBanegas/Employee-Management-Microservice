@@ -7,6 +7,7 @@ import { DataSourceConfig } from './config/data.sources';
 import { JobModule } from './modules/job/job.module';
 import { ScheduleModule } from './modules/schedule/schedule.module';
 import { EmployeeModule } from './modules/employee/employee.module';
+import { AttendanceRecordModule } from './modules/attendance-record/attendance-record.module';
 @Module({
   imports: [ConfigModule.forRoot(
     {
@@ -18,6 +19,7 @@ import { EmployeeModule } from './modules/employee/employee.module';
     JobModule,
     ScheduleModule,
     EmployeeModule,
+    AttendanceRecordModule,
   ],
   controllers: [AppController],
   providers: [AppService],

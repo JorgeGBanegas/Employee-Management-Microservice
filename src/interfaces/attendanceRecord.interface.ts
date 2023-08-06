@@ -3,7 +3,6 @@ import { IEmployee } from "./employee.interface";
 export interface IAttendanceRecord {
     employee: IEmployee;
     date: Date;
-    checkIn: string;
-    checkOut: string;
+    check: string;
     recordType: string;
 }
