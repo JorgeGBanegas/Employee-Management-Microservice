@@ -146,11 +146,10 @@ export class AttendanceRecordService {
         
 
         const { currentDaySchedule, now, typeRecord, time } = this.getCurrentDaySchedule(attendanceRecord, userExist);
-
+        
         if (currentDaySchedule) {
             await this.checkIfAttendanceRecordExistsToday(now, typeRecord, userExist.id);
-            const { currentHour, allowedStartTime, allowedEndTime } = this.calculateTimeRanges(currentDaySchedule, now);
-
+            const { currentHour, allowedStartTime, allowedEndTime } = this.calculateTimeRanges(currentDaySchedule);
             if (currentHour >= allowedStartTime && currentHour <= allowedEndTime) {
                 if (typeRecord === 'Salida') {
                     await this.checkIfEntryExistsToday(now, 'Entrada', userExist.id);
@@ -168,14 +167,16 @@ export class AttendanceRecordService {
         throw new HttpException('No hay un horario asignado para el día de hoy', HttpStatus.FORBIDDEN);
     }
     
-    private calculateTimeRanges(currentDaySchedule: DetailSchedule, now: Date) {
+    private calculateTimeRanges(currentDaySchedule: DetailSchedule) {
+        const now = new Date();
+
         const startHourParts = currentDaySchedule.startHour.split(":");
         const endHourParts = currentDaySchedule.endHour.split(":");
 
-        const startHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(startHourParts[0]), parseInt(startHourParts[1]));
+        const startHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(startHourParts[0]), parseInt(startHourParts[1]));   
         const endHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(endHourParts[0]), parseInt(endHourParts[1]));
-
-        const currentHour = new Date().getTime();
+        
+        const currentHour = now.getTime();
 
         const allowedStartTime = startHour.getTime() - 10 * 60 * 1000;
         const allowedEndTime = endHour.getTime() + 10 * 60 * 1000;
