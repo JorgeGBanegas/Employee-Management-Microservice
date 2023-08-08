@@ -16,8 +16,8 @@ export class CurrentScheduleAndAssistanceDTO{
     static fromEntity(nameSchedule: string, currentSchedule: DetailScheduleDTO, record: any): CurrentScheduleAndAssistanceDTO{
         const dto = new CurrentScheduleAndAssistanceDTO();
         dto.nameSchedule = nameSchedule;
-        dto.currentSchedule = currentSchedule;
-        dto.lastRecord = record;
+        dto.currentSchedule = DetailScheduleDTO.fromEntity(currentSchedule);
+        dto.lastRecord = record ? AttendanceRecordDTO.fromEntity(record) : null;
         return dto;
     }
 }

@@ -11,6 +11,9 @@ import { JobService } from '../job/job.service';
 import { ScheduleService } from '../schedule/schedule.service';
 import { Schedule } from 'src/entities/schedule.entity';
 import { UpdateEmployeeDTO } from './employeeDTOs/updateEmployee.dto';
+import { AttendanceRecord } from 'src/entities/attendanceRecord.entity';
+import { CurrentScheduleAndAssistanceDTO } from './employeeDTOs/currentScheduleAndAssistance.dto';
+import { DAY } from 'src/entities/detailSchedule.entity';
 
 @Injectable()
 export class EmployeeService {
@@ -22,6 +25,8 @@ export class EmployeeService {
         private readonly jobRepository: Repository<Job>,
         @InjectRepository(Schedule)
         private readonly scheduleRepository: Repository<Schedule>,
+        @InjectRepository(AttendanceRecord)
+        private readonly attendanceRecordRepository: Repository<AttendanceRecord>,
         private readonly configService: ConfigService,
     ) { }
 
@@ -183,5 +188,54 @@ export class EmployeeService {
         } catch (error) {
             throw error;
         }
+    }
+
+    getDayOfWeek = (dayNumber: number): DAY => {
+        switch (dayNumber) {
+            case 1:
+                return DAY.MONDAY;
+            case 2:
+                return DAY.TUESDAY;
+            case 3:
+                return DAY.WEDNESDAY;
+            case 4:
+                return DAY.THURSDAY;
+            case 5:
+                return DAY.FRIDAY;
+            case 6:
+                return DAY.SATURDAY;
+            case 0:
+                return DAY.SUNDAY;
+            default:
+                throw new Error('Invalid day number');
+        }
+    };
+
+
+    async getCurrentScheduleAndAssistance(email: string): Promise<any> {
+        //OBtener el empleado   con sus horarios y asistencias y ordenar las asistencias de la mas reciente a la mas antigua
+        const employee = await this.employeeRepository.findOne({
+            where: { email },
+            relations: ['schedule', 'attendanceRecords'],
+        });
+        
+        if (!employee) {
+            throw new HttpException('El empleado no existe', HttpStatus.NOT_FOUND);
+        }
+
+        employee.attendanceRecords.sort((a, b) => {
+            return b.createdAt.getTime() - a.createdAt.getTime();
+        });
+
+        //obtener horario con el dia de la semana actual
+        const today = new Date();
+        const day = this.getDayOfWeek(today.getDay());
+        const detailSchedule = employee.schedule.detailSchedules.find((detail) => detail.day === day);
+        
+        return CurrentScheduleAndAssistanceDTO.fromEntity(
+            employee.schedule.name,
+            detailSchedule,
+            employee.attendanceRecords[0],
+        );
     }
 }

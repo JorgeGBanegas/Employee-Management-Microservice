@@ -52,4 +52,9 @@ export class EmployeeController {
 
         return await this.employeeService.update(id, employee, photo);
     }
+
+    @Get('schedule/assistance/:email')
+    async getScheduleAndAssistance(@Param('email') email: string): Promise<any> {
+        return await this.employeeService.getCurrentScheduleAndAssistance(email);
+    }
 }
