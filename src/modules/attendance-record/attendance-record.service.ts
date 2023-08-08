@@ -175,7 +175,7 @@ export class AttendanceRecordService {
         const startHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(startHourParts[0]), parseInt(startHourParts[1]));
         const endHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(endHourParts[0]), parseInt(endHourParts[1]));
 
-        const currentHour = now.getTime();
+        const currentHour = new Date().getTime();
 
         const allowedStartTime = startHour.getTime() - 10 * 60 * 1000;
         const allowedEndTime = endHour.getTime() + 10 * 60 * 1000;
