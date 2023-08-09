@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { AttendanceRecordService } from './attendance-record.service';
 import { RegisterAssistDto } from './attendance-recordDtos/registerAssist.dto';
 
@@ -17,5 +17,11 @@ export class AttendanceRecordController {
             console.log("🚀 ~ file: attendance-record.controller.ts:17 ~ AttendanceRecordController ~ registerAssistance ~ error:", error)
             throw error;
         }
+    }
+
+    @Get('/history')
+    async getAttendanceHistory(@Query('email') email: string, 
+        @Query('year') year: number, @Query('month') month: number): Promise<any> {
+        return await this.attendanceRecordService.getAttendanceHistory(email, year, month);
     }
 }

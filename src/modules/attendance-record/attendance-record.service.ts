@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AttendanceRecord, RECORD_TYPE } from 'src/entities/attendanceRecord.entity';
 import { Employee } from 'src/entities/employee.entity';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { RegisterAssistDto } from './attendance-recordDtos/registerAssist.dto';
 import { ConfigService } from '@nestjs/config';
 import { DAY, DetailSchedule } from 'src/entities/detailSchedule.entity';
@@ -216,4 +216,39 @@ export class AttendanceRecordService {
         }
         return userExist;
     }
+
+    async getAttendanceHistory(email: string, year: number, month: number): Promise<any> {
+        const startDate = new Date(year, month - 1, 1);
+        const endDate = new Date(year, month, 0);
+
+        const attendanceRecords = await this.attendanceRecordRepository.find({
+            where: { employee: { email },
+            date: Between(startDate, endDate)},
+            order: { date: 'DESC' }
+        });
+
+        const groupedRecords: Record<string, { checkIn?: AttendanceRecord; checkOut?: AttendanceRecord }> = {};
+
+        for (const record of attendanceRecords) {
+            const date = new Date(record.date); // Convert date to string format 'yyyy-mm-dd'
+
+            if (!groupedRecords[date.toISOString()]) {
+                groupedRecords[date.toISOString()] = {};
+            }
+
+            if (record.recordType === 'Entrada') {
+                groupedRecords[date.toISOString()].checkIn = record;
+            } else if (record.recordType === 'Salida') {
+                groupedRecords[date.toISOString()].checkOut = record;
+            }
+        }
+
+        const attendancePairs = Object.entries(groupedRecords).map(([date, registers]) => {
+            return { date, checkIn: registers.checkIn || null, checkOut: registers.checkOut || null };
+        });
+
+        return attendancePairs;
+    }
+
+
 }
