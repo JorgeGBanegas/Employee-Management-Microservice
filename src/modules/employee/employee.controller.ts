@@ -57,4 +57,12 @@ export class EmployeeController {
     async getScheduleAndAssistance(@Param('email') email: string): Promise<any> {
         return await this.employeeService.getCurrentScheduleAndAssistance(email);
     }
+
+    @Get('schedule/:id')
+    async getSchedule(@Param('id') id: number): Promise<any> {
+        if (isNaN(Number(id))) {
+            throw new HttpException('Id debe ser un numero', HttpStatus.BAD_REQUEST);
+        }
+        return await this.employeeService.getSchedule(id);
+    }
 }

@@ -14,6 +14,7 @@ import { UpdateEmployeeDTO } from './employeeDTOs/updateEmployee.dto';
 import { AttendanceRecord } from 'src/entities/attendanceRecord.entity';
 import { CurrentScheduleAndAssistanceDTO } from './employeeDTOs/currentScheduleAndAssistance.dto';
 import { DAY } from 'src/entities/detailSchedule.entity';
+import { EmployeeScheduleDTO } from './employeeDTOs/employeeSchedule.dto';
 
 @Injectable()
 export class EmployeeService {
@@ -237,5 +238,16 @@ export class EmployeeService {
             detailSchedule,
             employee.attendanceRecords[0],
         );
+    }
+
+    async getSchedule(id: number): Promise<EmployeeScheduleDTO> {
+        const employee = await this.employeeRepository.findOne({
+            where: { id },
+            relations: ['schedule'],
+        });
+        if (!employee) {
+            throw new HttpException('El empleado no existe', HttpStatus.NOT_FOUND);
+        }
+        return EmployeeScheduleDTO.fromEntity(employee.schedule, employee.email);
     }
 }
